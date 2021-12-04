@@ -1,43 +1,54 @@
 #pragma once
 
-// #include "chess-rook.hxx"
+#include "chess-tools.hxx"
+#include "chess-rook.hxx"
 
+#include <memory>
 #include <cstdint>
-#include <chrono>
-#include <mutex>
 #include <vector>
+#include <unordered_set>
 
 namespace kasper {
 
-using milliseconds = std::chrono::milliseconds;
-
 class IChessBoard {
 public:
-    virtual void print() noexcept = 0;
-    virtual void play()  noexcept = 0;
+    using Ptr = std::unique_ptr<IChessBoard>;
+public:
+    struct Cfg {
+        std::uint8_t rows;
+        std::uint8_t cols;
+        std::uint8_t rooks_num;
+        std::uint8_t moves_num;
+        Milliseconds delay_min;
+        Milliseconds delay_max;
+    };
+public:
+    virtual void show() const noexcept = 0;
+    virtual void play()       noexcept = 0;
+public:
+    IChessBoard()                                    = default;
+    virtual ~IChessBoard()                           = default;
+    IChessBoard(const IChessBoard& other)            = delete;
+    IChessBoard(IChessBoard&& other)                 = delete;
+    IChessBoard& operator=(const IChessBoard& other) = delete;
+    IChessBoard& operator=(IChessBoard&& other)      = delete;
+protected:
+    using Matrix    = std::vector<char>;
+    using HashTable = std::unordered_set<std::uint16_t>;
 };
 
 class ChessBoard final: public IChessBoard {
 public:
-    struct Params {
-        std::uint8_t width;
-        std::uint8_t height;
-        std::uint8_t rooks_num;
-        milliseconds delay_min;
-        milliseconds delay_max;
-    };
-    explicit ChessBoard(const Params& cfg) noexcept;
-    ChessBoard(const ChessBoard& other) = delete;
-    ChessBoard(ChessBoard&& other) = delete;
-    ChessBoard& operator=(const ChessBoard& other) = delete;
-    ChessBoard& operator=(ChessBoard&& other) = delete;
-    void print() noexcept override;
-    void play()  noexcept override;
+    explicit ChessBoard(const IChessBoard::Cfg& config) noexcept;
+public:
+    void show() const noexcept override;
+    void play()       noexcept override;
 private:
-    const Params m_cfg;
-    std::mutex   m_freezer;
-    // std::vector<IChessRook> m_rooks;
+    TypeGuard<IChessRook::List>::Ptr populate()   const noexcept;
+    void print(const IChessBoard::Matrix& matrix) const noexcept;
+private:
+    const IChessBoard::Cfg                 m_config;
+    const TypeGuard<IChessRook::List>::Ptr m_rooks;
 };
 
 };
-

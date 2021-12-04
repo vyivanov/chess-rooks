@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-make clean && make all && ./chess
+make clean && make -j $(nproc --all) && time ./chess

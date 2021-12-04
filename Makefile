@@ -1,19 +1,25 @@
 CC=g++
-FLAGS=-I./ -c -Wall -Wextra -O2 -std=c++14
+FLAGS=-I. -DDEBUG -Wall -Wextra -O2 -std=c++17
+
+.PHONY: all
+.PHONY: clean
 
 all: chess
 
-chess: main.o chess-board.o chess-rook.o
-	$(CC) main.o chess-board.o chess-rook.o -o $@
+chess: chess.o chess-board.o chess-rook.o chess-tools.o
+	$(CC) chess.o chess-board.o chess-rook.o chess-tools.o -lpthread -o $@
 
-main.o: main.cxx
-	$(CC) $(FLAGS) main.cxx
+chess.o: chess.cxx
+	$(CC) -c $(FLAGS) chess.cxx -o $@
 
 chess-board.o: chess-board.hxx chess-board.cxx
-	$(CC) $(FLAGS) chess-board.cxx
+	$(CC) -c $(FLAGS) chess-board.cxx -o $@
 
 chess-rook.o: chess-rook.hxx chess-rook.cxx
-	$(CC) $(FLAGS) chess-rook.cxx
+	$(CC) -c $(FLAGS) chess-rook.cxx -o $@
+
+chess-tools.o: chess-tools.hxx chess-tools.cxx
+	$(CC) -c $(FLAGS) chess-tools.cxx -o $@
 
 clean:
 	rm -rf *.o chess
