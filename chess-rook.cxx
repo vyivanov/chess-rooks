@@ -53,25 +53,36 @@ void ChessRook::worker() noexcept
 
 IChessRook::Pose ChessRook::new_position() const noexcept
 {
-    const bool is_move_row = RandGen().bernoulli();
-
     IChessRook::Pose new_pose = m_position;
 
-    if (is_move_row)
+    bool is_choose_pose = true;
+
+    while (is_choose_pose)
     {
-        new_pose.row = RandGen(0, m_limitation.row).uniform();
-    }
-    else
-    {
-        new_pose.col = RandGen(0, m_limitation.col).uniform();
+        const bool is_move_row = RandGen().bernoulli();
+
+        if (is_move_row)
+        {
+            new_pose.row = RandGen(0, m_limitation.row).uniform();
+        }
+        else
+        {
+            new_pose.col = RandGen(0, m_limitation.col).uniform();
+        }
+
+        if (new_pose != m_position)
+        {
+            is_choose_pose = false;
+        }
     }
 
     assert(
     (
-        (new_pose.row != m_position.row and new_pose.col == m_position.col) or
-        (new_pose.col != m_position.col and new_pose.row == m_position.row) or (new_pose == m_position)
+        (new_pose.row != m_position.row and new_pose.col == m_position.col)
+            or
+        (new_pose.col != m_position.col and new_pose.row == m_position.row)
     )
-        and "the rook is allowed to be moved only (1) vertically or (2) horizontally or (3) to be stationary"
+        and "rook is allowed to be moved only vertically or horizontally"
     );
 
     return new_pose;
@@ -79,11 +90,6 @@ IChessRook::Pose ChessRook::new_position() const noexcept
 
 IChessRook::MoveVector ChessRook::cmp_position(const IChessRook::Pose& new_pose) const noexcept
 {
-    if (new_pose == m_position)
-    {
-        return IChessRook::MoveVector::ZERO;
-    }
-
     if (new_pose.row != m_position.row)
     {
         return (new_pose.row < m_position.row) ? IChessRook::MoveVector::UP : IChessRook::MoveVector::DOWN;
@@ -103,11 +109,6 @@ bool ChessRook::is_move_to(const IChessRook::Pose& new_pose) const noexcept
 
     bool is_move = true;
 
-    if (IChessRook::MoveVector::ZERO == move_vector)
-    {
-        return is_move;
-    }
-
     for (const IChessRook::Ptr& rook: m_neighbors->obj())
     {
         if (rook->get_index() == m_index)
@@ -115,30 +116,43 @@ bool ChessRook::is_move_to(const IChessRook::Pose& new_pose) const noexcept
             continue;
         }
 
-        const auto neighbor = rook->get_position();
+        if (not is_move)
+        {
+            break;
+        }
+
+        const IChessRook::Pose neighbor = rook->get_position();
 
         if (IChessRook::MoveVector::UP == move_vector)
         {
             is_move &= not (
-                (neighbor.col == m_position.col) and (new_pose.row <= neighbor.row) and (neighbor.row < m_position.row)
+                (neighbor.col == m_position.col)
+                    and
+                (new_pose.row <= neighbor.row) and (neighbor.row <= m_position.row)
             );
         }
         else if (IChessRook::MoveVector::DOWN == move_vector)
         {
             is_move &= not (
-                (neighbor.col == m_position.col) and (m_position.row < neighbor.row) and (neighbor.row <= new_pose.row)
+                (neighbor.col == m_position.col)
+                    and
+                (m_position.row <= neighbor.row) and (neighbor.row <= new_pose.row)
             );
         }
         else if (IChessRook::MoveVector::LEFT == move_vector)
         {
             is_move &= not (
-                (neighbor.row == m_position.row) and (new_pose.col <= neighbor.col) and (neighbor.col < m_position.col)
+                (neighbor.row == m_position.row)
+                    and
+                (new_pose.col <= neighbor.col) and (neighbor.col <= m_position.col)
             );
         }
         else if (IChessRook::MoveVector::RIGHT == move_vector)
         {
             is_move &= not (
-                (neighbor.row == m_position.row) and (m_position.col < neighbor.col) and (neighbor.col <= new_pose.col)
+                (neighbor.row == m_position.row)
+                    and
+                (m_position.col <= neighbor.col) and (neighbor.col <= new_pose.col)
             );
         }
         else
@@ -153,6 +167,11 @@ bool ChessRook::is_move_to(const IChessRook::Pose& new_pose) const noexcept
 bool IChessRook::Pose::operator==(const IChessRook::Pose& other) const noexcept
 {
     return (row == other.row) and (col == other.col);
+}
+
+bool IChessRook::Pose::operator!=(const IChessRook::Pose& other) const noexcept
+{
+    return not (*this == other);
 }
 
 };

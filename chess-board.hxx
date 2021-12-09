@@ -46,6 +46,7 @@ public:
 private:
     TypeGuard<IChessRook::List>::Ptr populate()   const noexcept;
     void print(const IChessBoard::Matrix& matrix) const noexcept;
+    void assert_poses() const noexcept;
 private:
     const IChessBoard::Cfg                 m_config;
     const TypeGuard<IChessRook::List>::Ptr m_rooks;

@@ -1,17 +1,26 @@
 Description
-===========
+-----------
 
-This is toy game with chess rooks.
+This is toy game with chess rooks. I was proposed to solve this task by [Kaspersky][1] guys after tech interview.
+
+What is the goal?
+
+> Suppose you have a chess board with 8x8 size and 6 rooks at random cells. These rooks starts to move randomly
+> and simultaneously: vertically or horizontally. Each rook takes delay in 200-300ms after each move.
+> Game for rook is ended once it faces with other one or once it performed 50 moves. It's need to print initial
+> and final rooks positions and to have fun.
+
+[1]: https://antidrone.kaspersky.com/en/
 
 Build and Run
-=============
+-------------
 
 ```bash
 $ ./build-n-run.sh
 ```
 
 Test Environment
-================
+----------------
 
 + Ubuntu-18.04
 + Ubuntu-20.04
@@ -19,38 +28,8 @@ Test Environment
 + C++17
 
 Sample Output
-=============
+-------------
 
-```
-rook_0: (2,2)
-rook_1: (2,0)
-rook_2: (5,5)
-rook_3: (2,1)
-rook_4: (6,5)
-rook_5: (6,7)
+![](demo.gif)
 
-- - - - - - - -
-- - - - - - - -
-1 3 0 - - - - -
-- - - - - - - -
-- - - - - - - -
-- - - - - 2 - -
-- - - - - 4 - 5
-- - - - - - - -
-
-rook_0: (2,2)
-rook_1: (6,0)
-rook_2: (6,5)
-rook_3: (6,1)
-rook_4: (6,2)
-rook_5: (4,2)
-
-- - - - - - - -
-- - - - - - - -
-- - 0 - - - - -
-- - - - - - - -
-- - 5 - - - - -
-- - - - - - - -
-1 3 4 - - 2 - -
-- - - - - - - -
-```
+It's fun . . .

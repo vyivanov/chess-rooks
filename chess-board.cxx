@@ -19,7 +19,7 @@ ChessBoard::ChessBoard(const IChessBoard::Cfg& config) noexcept
 {
     assert(0 < m_config.rows and m_config.rows < 16+1             and "check client config");
     assert(0 < m_config.cols and m_config.cols < 16+1             and "check client config");
-    assert(0 < m_config.rooks_num and m_config.rooks_num < 10     and "check client config");
+    assert(0 < m_config.rooks_num and m_config.rooks_num < 9+1    and "check client config");
     assert(0 < m_config.moves_num and m_config.moves_num < 200+1  and "check client config");
     assert(m_config.rows == m_config.cols                         and "check client config");
     assert(m_config.rooks_num <= config.rows * config.cols        and "check client config");
@@ -48,6 +48,8 @@ void ChessBoard::show() const noexcept   /* T = O(rows*cols) */
 
 void ChessBoard::play() noexcept   /* T = O(rooks_num**2) */
 {
+    assert_poses();
+
     for (const IChessRook::Ptr& rook: m_rooks->obj())
     {
         rook->move();
@@ -57,6 +59,8 @@ void ChessBoard::play() noexcept   /* T = O(rooks_num**2) */
     {
         rook->wait();
     }
+
+    assert_poses();
 }
 
 TypeGuard<IChessRook::List>::Ptr ChessBoard::populate() const noexcept   /* T = O(rooks_num) */
@@ -127,6 +131,23 @@ void ChessBoard::print(const IChessBoard::Matrix& matrix) const noexcept   /* T 
     }
 
     std::cout << '\n';
+}
+
+void ChessBoard::assert_poses() const noexcept
+{
+#ifdef DEBUG
+    auto known_poses = IChessBoard::HashTable{};
+
+    for (const IChessRook::Ptr& rook: m_rooks->obj())
+    {
+        const IChessRook::Pose pose = rook->get_position();
+        const auto [_, ok] = known_poses.insert(pose.row * 1'024U + pose.col);
+        if (not ok)
+        {
+            assert(false and "rooks collision detected");
+        }
+    }
+#endif
 }
 
 };

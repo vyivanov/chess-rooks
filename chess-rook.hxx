@@ -20,6 +20,7 @@ public:
         std::uint16_t row;
         std::uint16_t col;
         bool operator==(const Pose& other) const noexcept;
+        bool operator!=(const Pose& other) const noexcept;
     };
     struct Cfg {
         Index index;
@@ -44,7 +45,7 @@ public:
     IChessRook& operator=(IChessRook&& other)      = delete;
 protected:
     enum class MoveVector {
-        ZERO, UP, DOWN, LEFT, RIGHT
+        UP, DOWN, LEFT, RIGHT
     };
 };
 
