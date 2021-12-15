@@ -78,8 +78,8 @@ public:
     IChessRook::Index get_index()    const noexcept override { return m_index;    };
     IChessRook::Pose  get_position() const noexcept override { return m_position; };
 public:
-    void move() noexcept override { m_spinlock.store(false); };
-    void wait() noexcept override { m_worker.join();         };
+    void move() noexcept override { m_spinlock.clear(); };
+    void wait() noexcept override { m_worker.join();    };
 private:
     void worker() noexcept;
 private:
@@ -95,7 +95,7 @@ private:
     Milliseconds      const m_delay_min;
     Milliseconds      const m_delay_max;
     TypeGuard<IChessRook::List>::Ptr const m_neighbors;
-    std::atomic<bool>       m_spinlock;
+    std::atomic_flag        m_spinlock = ATOMIC_FLAG_INIT;
     std::thread             m_worker;
 };
 

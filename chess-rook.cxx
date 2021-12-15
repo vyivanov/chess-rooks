@@ -42,16 +42,16 @@ ChessRook::ChessRook(const IChessRook::Cfg& config, TypeGuard<IChessRook::List>:
     , m_spinlock(true)
     , m_worker(std::thread(&ChessRook::worker, this))
 {
-    assert(m_moves_cnt == 0    and "check ctor");
-    assert(m_spinlock.load()   and "check ctor");
-    assert(m_worker.joinable() and "check ctor");
+    assert(m_moves_cnt == 0          and "check ctor");
+    assert(m_spinlock.test_and_set() and "check ctor");
+    assert(m_worker.joinable()       and "check ctor");
 }
 
 void ChessRook::worker() noexcept
 {
     RandGen rand_delay(m_delay_min.count(), m_delay_max.count());
 
-    while (m_spinlock.load()) {;;;;;}
+    while (m_spinlock.test_and_set());
     while (true)
     {
         {
@@ -138,11 +138,6 @@ bool ChessRook::is_move_to(const IChessRook::Pose& new_pose) const noexcept
             continue;
         }
 
-        if (not is_move)
-        {
-            break;
-        }
-
         const IChessRook::Pose neighbor = rook->get_position();
 
         if (IChessRook::MoveVector::UP == move_vector)
@@ -180,6 +175,11 @@ bool ChessRook::is_move_to(const IChessRook::Pose& new_pose) const noexcept
         else
         {
             assert(false and "check method logic");
+        }
+
+        if (not is_move)
+        {
+            break;
         }
     }
 
