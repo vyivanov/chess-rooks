@@ -23,13 +23,11 @@ $ ./build-n-run.sh
 Test Environment
 ----------------
 
-+ Ubuntu-18.04
-+ Ubuntu-20.04
++ ubuntu-18.04 (20.04)
 + build-essential
-+ C++17
 
-Sample Output
--------------
+Demo
+----
 
 ![](demo.gif)
 

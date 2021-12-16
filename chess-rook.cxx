@@ -43,6 +43,7 @@ ChessRook::ChessRook(const IChessRook::Cfg& config, TypeGuard<IChessRook::List>:
     , m_worker(std::thread(&ChessRook::worker, this))
 {
     assert(m_moves_cnt == 0          and "check ctor");
+    assert(m_neighbors               and "check ctor");
     assert(m_spinlock.test_and_set() and "check ctor");
     assert(m_worker.joinable()       and "check ctor");
 }

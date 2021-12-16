@@ -39,16 +39,16 @@ ChessBoard::ChessBoard(const IChessBoard::Cfg& config) noexcept
     : m_config(config)
     , m_rooks(populate())
 {
-    assert(0 < m_config.rows and m_config.rows < 16+1             and "check client config");
-    assert(0 < m_config.cols and m_config.cols < 16+1             and "check client config");
-    assert(0 < m_config.rooks_num and m_config.rooks_num < 9+1    and "check client config");
-    assert(0 < m_config.moves_num and m_config.moves_num < 200+1  and "check client config");
-    assert(m_config.rows == m_config.cols                         and "check client config");
-    assert(m_config.rooks_num <= config.rows * config.cols        and "check client config");
-    assert(m_config.delay_min <= m_config.delay_max               and "check client config");
-    assert(1ms <= m_config.delay_min and m_config.delay_min <= 1s and "check client config");
-    assert(1ms <= m_config.delay_max and m_config.delay_max <= 1s and "check client config");
-    assert(m_config.rooks_num == m_rooks->obj().size()            and "check populate logic");
+    assert(0 < m_config.rows and m_config.rows < (16+1)            and "check client config");
+    assert(0 < m_config.cols and m_config.cols < (16+1)            and "check client config");
+    assert(0 < m_config.rooks_num and m_config.rooks_num < (9+1)   and "check client config");
+    assert(0 < m_config.moves_num and m_config.moves_num < (200+1) and "check client config");
+    assert(m_config.rows == m_config.cols                          and "check client config");
+    assert(m_config.rooks_num <= config.rows * config.cols         and "check client config");
+    assert(m_config.delay_min <= m_config.delay_max                and "check client config");
+    assert(1ms <= m_config.delay_min and m_config.delay_min <= 1s  and "check client config");
+    assert(1ms <= m_config.delay_max and m_config.delay_max <= 1s  and "check client config");
+    assert(m_config.rooks_num == m_rooks->obj().size()             and "check populate logic");
 }
 
 void ChessBoard::show() const noexcept   /* T = O(rows*cols) */
@@ -118,7 +118,7 @@ TypeGuard<IChessRook::List>::Ptr ChessBoard::populate() const noexcept   /* T = 
             const auto lim = IChessRook::Pose{.row = lim_row, .col = lim_col};
 
             IChessRook::Ptr rook = std::make_unique<ChessRook>(
-                IChessRook::Cfg{
+                IChessRook::Cfg {
                     .index     = idx,
                     .init      = pos,
                     .limit     = lim,
@@ -145,14 +145,13 @@ void ChessBoard::print(const IChessBoard::Matrix& matrix) const noexcept   /* T 
         for (auto col = 0; col < m_config.cols; ++col)
         {
             const auto idx = row * m_config.rows + col;
-
             std::cout << matrix.at(idx);
-
             (idx + 1) % m_config.cols ? std::cout << '\x20' : std::cout << '\n';
         }
     }
 
     std::cout << '\n';
+    std::cout.flush();
 }
 
 void ChessBoard::assert_poses() const noexcept

@@ -22,4 +22,4 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-make clean && make -j $(nproc --all) && time ./chess
+make clean && make -j "$(nproc --all)" && time ./chess

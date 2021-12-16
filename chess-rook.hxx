@@ -53,8 +53,8 @@ public:
         Milliseconds delay_max;
     };
 public:
-    virtual Index get_index()    const noexcept = 0;
-    virtual Pose  get_position() const noexcept = 0;
+    [[nodiscard]] virtual Index get_index()    const noexcept = 0;
+    [[nodiscard]] virtual Pose  get_position() const noexcept = 0;
 public:
     virtual void move() noexcept = 0;
     virtual void wait() noexcept = 0;
@@ -75,17 +75,17 @@ class ChessRook final: public IChessRook {
 public:
     ChessRook(const IChessRook::Cfg& config, TypeGuard<IChessRook::List>::Ptr neighbors) noexcept;
 public:
-    IChessRook::Index get_index()    const noexcept override { return m_index;    };
-    IChessRook::Pose  get_position() const noexcept override { return m_position; };
+    [[nodiscard]] IChessRook::Index get_index()    const noexcept override { return m_index;    };
+    [[nodiscard]] IChessRook::Pose  get_position() const noexcept override { return m_position; };
 public:
     void move() noexcept override { m_spinlock.clear(); };
     void wait() noexcept override { m_worker.join();    };
 private:
     void worker() noexcept;
 private:
-    IChessRook::Pose new_position() const noexcept;
-    IChessRook::MoveVector cmp_position(const IChessRook::Pose& new_pose) const noexcept;
-    bool is_move_to(const IChessRook::Pose& new_pose) const noexcept;
+    [[nodiscard]] IChessRook::Pose new_position() const noexcept;
+    [[nodiscard]] IChessRook::MoveVector cmp_position(const IChessRook::Pose& new_pose) const noexcept;
+    [[nodiscard]] bool is_move_to(const IChessRook::Pose& new_pose) const noexcept;
 private:
     IChessRook::Index const m_index;
     IChessRook::Pose        m_position;

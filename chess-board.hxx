@@ -66,7 +66,8 @@ public:
     void show() const noexcept override;
     void play()       noexcept override;
 private:
-    TypeGuard<IChessRook::List>::Ptr populate()   const noexcept;
+    [[nodiscard]] TypeGuard<IChessRook::List>::Ptr populate() const noexcept;
+private:
     void print(const IChessBoard::Matrix& matrix) const noexcept;
     void assert_poses() const noexcept;
 private:
